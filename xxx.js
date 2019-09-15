@@ -89,8 +89,8 @@ class Block {
     this.ctx = ctx;
     this.x = x;
     this.y = y;
-    this.width = 20;
-    this.height = 20;
+    this.width = 5;
+    this.height = 5;
     this.color = color;
     this.life = 1;
     this.hasItem = false;
@@ -166,7 +166,6 @@ class Game {
         y: 100
       })
     ];
-    console.log(this.blocks);
   }
   setUp = () => {
     this.addEvent();
@@ -181,26 +180,15 @@ class Game {
   };
   blockHitDecision = (ball, block) => {
     if (
-      (ball.left === block.right &&
-        ball.center.y > block.top &&
-        ball.center.y < block.bottom) ||
-      (ball.right === block.left &&
-        ball.center.y > block.top &&
-        ball.center.y < block.bottom) ||
-      (ball.top === block.bottom &&
-        ball.center.x > block.left &&
-        ball.center.x < block.right) ||
-      (ball.bottom === block.top &&
-        ball.center.x > block.left &&
-        ball.center.x < block.right)
+      ball.left < block.right &&
+      ball.top < block.bottom &&
+      ball.right > block.left &&
+      ball.bottom > block.top
     ) {
+      block.remove();
       ball.reverseX();
       ball.reverseY();
-      block.remove();
-      this.blocks.filter(blockItem => {
-        return blockItem.life === 1;
-      });
-      console.log(this.blocks);
+      this.blocks = this.blocks.filter(blockItem => !!blockItem.life);
     }
   };
   wallHitDecision = ball => {
@@ -220,6 +208,7 @@ class Game {
       ball.reverseY();
     }
   };
+
   main = () => {
     ctx.clearRect(0, 0, this.screenWidth, this.screenHeight);
 

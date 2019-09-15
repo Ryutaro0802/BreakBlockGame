@@ -138,13 +138,10 @@ class Game {
   };
   blockHitDecision = () => {};
   wallHitDecision = ball => {
-    if (
-      ball.left < 0 ||
-      ball.right > this.screenWidth ||
-      ball.top < 0 ||
-      ball.bottom > this.screenHeight
-    ) {
+    if (ball.left < 0 || ball.right > this.screenWidth) {
       ball.distanceX *= -1;
+    }
+    if (ball.top < 0 || ball.bottom > this.screenHeight) {
       ball.distanceY *= -1;
     }
   };

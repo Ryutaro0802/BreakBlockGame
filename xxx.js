@@ -73,20 +73,43 @@ class Ball {
     this.x += this.speed * this.distanceX;
     this.y += this.speed * this.distanceY;
   };
+  reverseX = () => {
+    this.distanceX *= -1;
+  };
+  reverseY = () => {
+    this.distanceY *= -1;
+  };
   remove = () => {
     this.life = 0;
   };
 }
 
 class Block {
-  constructor(x, y, color) {
+  constructor({ ctx, x, y, color }) {
+    this.ctx = ctx;
     this.x = x;
     this.y = y;
+    this.width = 20;
+    this.height = 20;
     this.color = color;
     this.life = 1;
     this.hasItem = false;
   }
-  draw = () => {};
+  get left() {
+    return this.x;
+  }
+  get right() {
+    return this.x + this.width;
+  }
+  get top() {
+    return this.y;
+  }
+  get bottom() {
+    return this.y + this.height;
+  }
+  draw = () => {
+    this.ctx.fillRect(this.x, this.y, this.width, this.height);
+  };
   remove = () => {
     this.life = 0;
   };
@@ -110,9 +133,7 @@ class Game {
     this.bar = new Bar({
       ctx,
       x: 25,
-      y: this.screenHeight - 20,
-      moveX: 1,
-      moveY: 1
+      y: this.screenHeight - 20
     });
     this.balls = [
       new Ball({
@@ -123,7 +144,29 @@ class Game {
         imgSrc: imgSrc.ball1
       })
     ];
-    this.blocks = [];
+    this.blocks = [
+      new Block({
+        ctx,
+        x: 300,
+        y: 100
+      }),
+      new Block({
+        ctx,
+        x: 200,
+        y: 100
+      }),
+      new Block({
+        ctx,
+        x: 400,
+        y: 100
+      }),
+      new Block({
+        ctx,
+        x: 100,
+        y: 100
+      })
+    ];
+    console.log(this.blocks);
   }
   setUp = () => {
     this.addEvent();
@@ -136,13 +179,36 @@ class Game {
     this.mouseX = e.clientX - this.stageElement.offsetLeft;
     this.mouseY = e.clientY - this.stageElement.offsetTop;
   };
-  blockHitDecision = () => {};
+  blockHitDecision = (ball, block) => {
+    if (
+      (ball.left === block.right &&
+        ball.center.y > block.top &&
+        ball.center.y < block.bottom) ||
+      (ball.right === block.left &&
+        ball.center.y > block.top &&
+        ball.center.y < block.bottom) ||
+      (ball.top === block.bottom &&
+        ball.center.x > block.left &&
+        ball.center.x < block.right) ||
+      (ball.bottom === block.top &&
+        ball.center.x > block.left &&
+        ball.center.x < block.right)
+    ) {
+      ball.reverseX();
+      ball.reverseY();
+      block.remove();
+      this.blocks.filter(blockItem => {
+        return blockItem.life === 1;
+      });
+      console.log(this.blocks);
+    }
+  };
   wallHitDecision = ball => {
     if (ball.left < 0 || ball.right > this.screenWidth) {
-      ball.distanceX *= -1;
+      ball.reverseX();
     }
     if (ball.top < 0 || ball.bottom > this.screenHeight) {
-      ball.distanceY *= -1;
+      ball.reverseY();
     }
   };
   barHitDecision = (ball, bar) => {
@@ -151,20 +217,36 @@ class Game {
       ball.right < bar.right &&
       ball.bottom > bar.top
     ) {
-      ball.distanceY *= -1;
+      ball.reverseY();
     }
   };
   main = () => {
     ctx.clearRect(0, 0, this.screenWidth, this.screenHeight);
 
+    this.balls.forEach(ball => {
+      this.wallHitDecision(ball);
+      this.barHitDecision(ball, this.bar);
+      this.blocks.forEach(block => {
+        this.blockHitDecision(ball, block);
+      });
+    });
+
     this.bar.move(this.mouseX);
-    this.balls[0].move();
+    this.balls.forEach(ball => {
+      ball.move();
+    });
 
-    this.balls[0].draw();
     this.bar.draw();
-
-    this.wallHitDecision(this.balls[0]);
-    this.barHitDecision(this.balls[0], this.bar);
+    this.balls.forEach(ball => {
+      if (ball.life) {
+        ball.draw();
+      }
+    });
+    this.blocks.forEach(block => {
+      if (block.life) {
+        block.draw();
+      }
+    });
 
     requestAnimationFrame(this.main);
   };

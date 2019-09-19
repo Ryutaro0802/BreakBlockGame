@@ -4,18 +4,17 @@ import { Block } from "./ui/Block.js";
 import { Item } from "./ui/Item.js";
 import { MainImage } from "./ui/MainImage.js";
 
-const imgSrc = {
-  ball1: "./assets/ball1.gif",
-  ball2: "./assets/ball2.gif",
-  ball3: "./assets/ball2.gif",
-  star: "./assets/star.png",
-  xxx: "./assets/xxx.jpg"
-};
-
 export class Game {
   constructor({ stageElement }) {
     this.stageElement = stageElement;
     this.ctx = this.stageElement.getContext("2d");
+    this.imageSrc = {
+      ball1: "./assets/ball1.gif",
+      ball2: "./assets/ball2.gif",
+      ball3: "./assets/ball3.gif",
+      star: "./assets/star.png",
+      xxx: "./assets/xxx.jpg"
+    };
     this.screenWidth = this.stageElement.width;
     this.screenHeight = this.stageElement.height;
     this.mouseX = 0;
@@ -25,14 +24,18 @@ export class Game {
       x: 25,
       y: this.screenHeight - 20
     });
-    this.mainImage = new MainImage({ ctx: this.ctx, imgSrc: imgSrc.xxx });
+    this.mainImage = new MainImage({
+      ctx: this.ctx,
+      imgSrc: this.imageSrc.xxx
+    });
     this.balls = [
       new Ball({
         ctx: this.ctx,
         x: this.bar.right,
         y: this.bar.top,
         speed: 2,
-        imgSrc: imgSrc.ball1
+        imgSrc1: this.imageSrc.ball1,
+        imgSrc2: this.imageSrc.ball2
       })
     ];
     this.blocks = [];
@@ -97,7 +100,7 @@ export class Game {
             ctx: this.ctx,
             x: block.x,
             y: block.y,
-            imgSrc: imgSrc.star
+            imgSrc: this.imageSrc.star
           })
         );
       }

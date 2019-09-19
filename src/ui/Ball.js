@@ -1,12 +1,13 @@
 export class Ball {
-  constructor({ ctx, x, y, speed, imgSrc }) {
+  constructor({ ctx, x, y, speed, imgSrc1, imgSrc2 }) {
     this.ctx = ctx;
     this.x = x;
     this.y = y;
     this.speed = speed;
     this.distanceX = -1;
     this.distanceY = -1;
-    this.imgSrc = imgSrc;
+    this.imgSrc1 = imgSrc1;
+    this.imgSrc2 = imgSrc2;
     this.life = 1;
     this.diameter = 12;
     this.goThrough = false;
@@ -31,7 +32,7 @@ export class Ball {
   }
   draw = () => {
     const img = new Image();
-    img.src = this.imgSrc;
+    img.src = !this.goThrough ? this.imgSrc1 : this.imgSrc2;
     this.ctx.drawImage(img, this.x, this.y, this.diameter, this.diameter);
   };
   move = () => {

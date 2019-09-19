@@ -1,11 +1,11 @@
 export class Ball {
-  constructor({ ctx, x, y, speed, imgSrc1, imgSrc2 }) {
+  constructor({ ctx, x, y, distanceX, distanceY, speed, imgSrc1, imgSrc2 }) {
     this.ctx = ctx;
     this.x = x;
     this.y = y;
     this.speed = speed;
-    this.distanceX = -1;
-    this.distanceY = -1;
+    this.distanceX = distanceX;
+    this.distanceY = distanceY;
     this.imgSrc1 = imgSrc1;
     this.imgSrc2 = imgSrc2;
     this.life = 1;

@@ -5,7 +5,7 @@ export class Bar {
     this.y = y;
     this.color = color;
     this.width = 50;
-    this.height = 5;
+    this.height = 10;
   }
   get center() {
     return this.x + this.width / 2;

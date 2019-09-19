@@ -3,6 +3,7 @@ import { Ball } from "./ui/Ball.js";
 import { Block } from "./ui/Block.js";
 import { Item } from "./ui/Item.js";
 import { MainImage } from "./ui/MainImage.js";
+import { rectangleCollisionDetection } from "./utility/rectangleCollisionDetection.js";
 
 export class Game {
   constructor({ stageElement }) {
@@ -33,6 +34,8 @@ export class Game {
         ctx: this.ctx,
         x: this.bar.right,
         y: this.bar.top,
+        distanceX: -1,
+        distanceY: -1,
         speed: 2,
         imgSrc1: this.imageSrc.ball1,
         imgSrc2: this.imageSrc.ball2
@@ -47,7 +50,7 @@ export class Game {
     this.addEvent();
     this.createBlocks();
     this.setHasItem();
-    requestAnimationFrame(this.main);
+    this.main();
   };
   createBlocks = () => {
     let count = 0;
@@ -88,10 +91,16 @@ export class Game {
   };
   blockHitDecision = (ball, block) => {
     if (
-      ball.left < block.right &&
-      ball.top < block.bottom &&
-      ball.right > block.left &&
-      ball.bottom > block.top
+      rectangleCollisionDetection(
+        ball.left,
+        ball.top,
+        ball.right,
+        ball.bottom,
+        block.left,
+        block.top,
+        block.right,
+        block.bottom
+      )
     ) {
       block.remove();
       if (block.hasItem) {
@@ -109,7 +118,7 @@ export class Game {
         ball.reverseX();
         ball.reverseY();
       }
-      this.blocks = this.blocks.filter(blockItem => !!blockItem.life);
+      this.blocks = this.blocks.filter(b => !!b.life);
     }
   };
   wallHitDecision = ball => {
@@ -120,11 +129,18 @@ export class Game {
       ball.reverseY();
     }
   };
-  barHitDecision = (ball, bar) => {
+  barBallHitDecision = (ball, bar) => {
     if (
-      ball.left > bar.left &&
-      ball.right < bar.right &&
-      ball.bottom > bar.top
+      rectangleCollisionDetection(
+        ball.left,
+        ball.top,
+        ball.right,
+        ball.bottom,
+        bar.left,
+        bar.top,
+        bar.right,
+        bar.bottom
+      )
     ) {
       ball.offGoThroughMode();
       // バーの真ん中あたりにあたったら貫通モードになる
@@ -140,10 +156,50 @@ export class Game {
       ball.reverseY();
     }
   };
-  checkGameOver = ball => {
-    if (ball.bottom > this.screenHeight) {
-      console.log("GameOver!!");
+  itemBottomHitDecision = item => {
+    if (this.screenHeight < item.bottom) {
+      this.items = this.items.filter(i => i !== item);
     }
+  };
+  itemBarHitDecision = (item, bar) => {
+    if (
+      rectangleCollisionDetection(
+        item.left,
+        item.top,
+        item.right,
+        item.bottom,
+        bar.left,
+        bar.top,
+        bar.right,
+        bar.bottom
+      )
+    ) {
+      this.items = this.items.filter(i => i !== item);
+      this.balls = [
+        ...this.balls,
+        new Ball({
+          ctx: this.ctx,
+          x: item.left,
+          y: item.bottom - 10,
+          distanceX: -1,
+          distanceY: -1,
+          speed: 2,
+          imgSrc1: this.imageSrc.ball3,
+          imgSrc2: this.imageSrc.ball2
+        })
+      ];
+    }
+  };
+  ballBottomHitDecision = ball => {
+    if (this.screenHeight < ball.bottom) {
+      if (ball === this.balls[0]) {
+        this.gameOver();
+      }
+      this.balls.filter(b => b !== ball);
+    }
+  };
+  gameOver = () => {
+    console.log("GameOver!!");
   };
   main = () => {
     this.ctx.clearRect(0, 0, this.screenWidth, this.screenHeight);
@@ -151,13 +207,16 @@ export class Game {
 
     this.balls.forEach(ball => {
       this.wallHitDecision(ball);
-      this.barHitDecision(ball, this.bar);
+      this.ballBottomHitDecision(ball);
+      this.barBallHitDecision(ball, this.bar);
       this.blocks.forEach(block => {
         this.blockHitDecision(ball, block);
       });
     });
-
-    this.checkGameOver(this.balls[0]);
+    this.items.forEach(item => {
+      this.itemBottomHitDecision(item);
+      this.itemBarHitDecision(item, this.bar);
+    });
 
     this.bar.move(this.mouseX);
     this.balls.forEach(ball => {

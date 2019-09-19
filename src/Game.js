@@ -95,14 +95,15 @@ export class Game {
     ) {
       block.remove();
       if (block.hasItem) {
-        this.items.push(
+        this.items = [
+          ...this.items,
           new Item({
             ctx: this.ctx,
             x: block.x,
             y: block.y,
             imgSrc: this.imageSrc.star
           })
-        );
+        ];
       }
       if (!ball.goThrough) {
         ball.reverseX();

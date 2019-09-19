@@ -119,7 +119,7 @@ export class Game {
         ball.reverseX();
         ball.reverseY();
       }
-      this.blocks = this.blocks.filter(b => !!b.life);
+      this.blocks = this.blocks.filter(b => b !== block);
     }
   };
   wallHitDecision = ball => {

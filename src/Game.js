@@ -34,7 +34,7 @@ export class Game {
         ctx: this.ctx,
         x: this.bar.right,
         y: this.bar.top,
-        distanceX: -1,
+        distanceX: Math.floor(Math.random() * 2) ? 1 : -1,
         distanceY: -1,
         speed: 2,
         imgSrc1: this.imageSrc.ball1,
@@ -61,13 +61,14 @@ export class Game {
         y += 5;
         x = 0;
       }
-      this.blocks.push(
+      this.blocks = [
+        ...this.blocks,
         new Block({
           ctx: this.ctx,
           x: x * 5,
           y: y
         })
-      );
+      ];
       x++;
       count++;
     }
@@ -144,7 +145,7 @@ export class Game {
     ) {
       ball.offGoThroughMode();
       // バーの真ん中あたりにあたったら貫通モードになる
-      if (Math.abs(ball.center.x - bar.center) < 1) {
+      if (Math.abs(ball.center.x - bar.center) < 2) {
         ball.onGoThroughMode();
       }
       // 当たらないブロックが存在しそうになるので動きを調整する
@@ -180,8 +181,8 @@ export class Game {
         new Ball({
           ctx: this.ctx,
           x: item.left,
-          y: item.bottom - 10,
-          distanceX: -1,
+          y: item.top - 10,
+          distanceX: Math.floor(Math.random() * 2) ? 1 : -1,
           distanceY: -1,
           speed: 2,
           imgSrc1: this.imageSrc.ball3,
@@ -199,7 +200,7 @@ export class Game {
     }
   };
   gameOver = () => {
-    console.log("GameOver!!");
+    this.stageElement.remove();
   };
   main = () => {
     this.ctx.clearRect(0, 0, this.screenWidth, this.screenHeight);

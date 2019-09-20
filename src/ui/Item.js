@@ -5,7 +5,6 @@ export class Item {
     this.y = y;
     this.speed = 2;
     this.imgSrc = imgSrc;
-    this.life = 1;
     this.width = 40;
     this.height = 40;
   }
@@ -34,8 +33,5 @@ export class Item {
   };
   move = () => {
     this.y += this.speed;
-  };
-  remove = () => {
-    this.life = 0;
   };
 }

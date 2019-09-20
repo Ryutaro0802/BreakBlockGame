@@ -8,7 +8,6 @@ export class Ball {
     this.distanceY = distanceY;
     this.imgSrc1 = imgSrc1;
     this.imgSrc2 = imgSrc2;
-    this.life = 1;
     this.diameter = 12;
     this.goThrough = false;
   }
@@ -47,9 +46,6 @@ export class Ball {
   };
   moveAdjust = adjustX => {
     this.x += adjustX;
-  };
-  remove = () => {
-    this.life = 0;
   };
   onGoThroughMode = () => {
     this.goThrough = true;

@@ -125,7 +125,6 @@ export class Game {
         block.bottom
       )
     ) {
-      block.remove();
       if (block.hasItem) {
         this.items = [
           ...this.items,
@@ -282,19 +281,13 @@ export class Game {
 
     this.bar.draw();
     this.balls.forEach(ball => {
-      if (ball.life) {
-        ball.draw();
-      }
+      ball.draw();
     });
     this.blocks.forEach(block => {
-      if (block.life) {
-        block.draw();
-      }
+      block.draw();
     });
     this.items.forEach(item => {
-      if (item.life) {
-        item.draw();
-      }
+      item.draw();
     });
 
     requestAnimationFrame(this.main);

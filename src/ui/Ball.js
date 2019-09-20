@@ -1,11 +1,11 @@
 export class Ball {
-  constructor({ ctx, x, y, distanceX, distanceY, speed, imgSrc1, imgSrc2 }) {
+  constructor({ ctx, x, y, directionX, directionY, speed, imgSrc1, imgSrc2 }) {
     this.ctx = ctx;
     this.x = x;
     this.y = y;
     this.speed = speed;
-    this.distanceX = distanceX;
-    this.distanceY = distanceY;
+    this.directionX = directionX;
+    this.directionY = directionY;
     this.imgSrc1 = imgSrc1;
     this.imgSrc2 = imgSrc2;
     this.diameter = 12;
@@ -35,14 +35,14 @@ export class Ball {
     this.ctx.drawImage(img, this.x, this.y, this.diameter, this.diameter);
   };
   move = () => {
-    this.x += this.speed * this.distanceX;
-    this.y += this.speed * this.distanceY;
+    this.x += this.speed * this.directionX;
+    this.y += this.speed * this.directionY;
   };
   reverseX = () => {
-    this.distanceX *= -1;
+    this.directionX *= -1;
   };
   reverseY = () => {
-    this.distanceY *= -1;
+    this.directionY *= -1;
   };
   moveAdjust = adjustX => {
     this.x += adjustX;

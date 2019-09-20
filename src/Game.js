@@ -35,8 +35,8 @@ export class Game {
         ctx: this.ctx,
         x: this.bar.right,
         y: this.bar.top,
-        distanceX: Math.floor(Math.random() * 2) ? 1 : -1,
-        distanceY: -1,
+        directionX: Math.floor(Math.random() * 2) ? 1 : -1,
+        directionY: -1,
         speed: 2,
         imgSrc1: this.imageSrc.ball1,
         imgSrc2: this.imageSrc.ball2
@@ -221,8 +221,8 @@ export class Game {
           ctx: this.ctx,
           x: item.left,
           y: item.top - 10,
-          distanceX: Math.floor(Math.random() * 2) ? 1 : -1,
-          distanceY: -1,
+          directionX: Math.floor(Math.random() * 2) ? 1 : -1,
+          directionY: -1,
           speed: 2,
           imgSrc1: this.imageSrc.ball3,
           imgSrc2: this.imageSrc.ball2

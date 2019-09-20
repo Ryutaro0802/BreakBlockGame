@@ -177,11 +177,7 @@ export class Game {
         ball.onGoThroughMode();
       }
       // 当たらないブロックが存在しそうになるので動きを調整する
-      if (ball.center.x < bar.center) {
-        ball.moveAdjust(Math.floor(Math.random() * 7) * -1);
-      } else {
-        ball.moveAdjust(Math.floor(Math.random() * 7));
-      }
+      ball.moveAdjust(Math.floor(Math.random() * 7));
       ball.reverseY();
     }
   };

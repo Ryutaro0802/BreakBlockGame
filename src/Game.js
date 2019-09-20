@@ -4,6 +4,7 @@ import { Block } from "./ui/Block.js";
 import { Item } from "./ui/Item.js";
 import { MainImage } from "./ui/MainImage.js";
 import { rectangleCollisionDetection } from "./utility/rectangleCollisionDetection.js";
+import { stringToHtml } from "./utility/stringToHtml.js";
 
 export class Game {
   constructor({ stageElement }) {
@@ -46,12 +47,18 @@ export class Game {
     this.BLOCK_LENGTH = 4700;
     this.ITEM_LENGTH = 200;
   }
+  /**
+   * セットアップ
+   */
   setUp = () => {
     this.addEvent();
     this.createBlocks();
     this.setHasItem();
     this.main();
   };
+  /**
+   * ブロック生成
+   */
   createBlocks = () => {
     let count = 0;
     let y = 300;
@@ -73,6 +80,9 @@ export class Game {
       count++;
     }
   };
+  /**
+   * ブロックにランダムでアイテムを仕込む
+   */
   setHasItem = () => {
     let count = 0;
     while (count < this.ITEM_LENGTH) {
@@ -83,13 +93,25 @@ export class Game {
       count++;
     }
   };
+  /**
+   * イベント登録
+   */
   addEvent = () => {
     this.stageElement.addEventListener("mousemove", this.onMouseMove);
   };
+  /**
+   * マウスが動いたときxとyを更新
+   * @param {EventObject} e イベントオブジェクト
+   */
   onMouseMove = e => {
     this.mouseX = e.clientX - this.stageElement.offsetLeft;
     this.mouseY = e.clientY - this.stageElement.offsetTop;
   };
+  /**
+   * ボールとブロックがあたった
+   * @param {Ball} ball Ballインスタンス
+   * @param {Block} block blockインスタンス
+   */
   blockHitDecision = (ball, block) => {
     if (
       rectangleCollisionDetection(
@@ -122,6 +144,10 @@ export class Game {
       this.blocks = this.blocks.filter(b => b !== block);
     }
   };
+  /**
+   * ボールと壁があたった
+   * @param {Ball} ball Ballインスタンス
+   */
   wallHitDecision = ball => {
     if (ball.left < 0 || ball.right > this.screenWidth) {
       ball.reverseX();
@@ -130,6 +156,11 @@ export class Game {
       ball.reverseY();
     }
   };
+  /**
+   * バーとボールがあたった
+   * @param {Ball} ball Ballインスタンス
+   * @param {Bar} bar Barインスタンス
+   */
   barBallHitDecision = (ball, bar) => {
     if (
       rectangleCollisionDetection(
@@ -157,11 +188,20 @@ export class Game {
       ball.reverseY();
     }
   };
+  /**
+   * アイテムが下まで落ちた
+   * @param {Item} item Itemインスタンス
+   */
   itemBottomHitDecision = item => {
     if (this.screenHeight < item.bottom) {
       this.items = this.items.filter(i => i !== item);
     }
   };
+  /**
+   * アイテムとバーがあたった
+   * @param {Item} item Itemインスタンス
+   * @param {Bar} bar Barインスタンス
+   */
   itemBarHitDecision = (item, bar) => {
     if (
       rectangleCollisionDetection(
@@ -191,6 +231,10 @@ export class Game {
       ];
     }
   };
+  /**
+   * ボールが下まで落ちた
+   * @param {Ball} ball Ballインスタンス
+   */
   ballBottomHitDecision = ball => {
     if (this.screenHeight < ball.bottom) {
       if (ball === this.balls[0]) {
@@ -199,9 +243,18 @@ export class Game {
       this.balls.filter(b => b !== ball);
     }
   };
+  /**
+   * ゲーム終わり
+   */
   gameOver = () => {
-    this.stageElement.remove();
+    const htmlString =
+      '<div style="background: black;color: white;font-weight: bold;font-size: 50px;display: flex;align-items: center;justify-content: center;margin: 0 auto;width: 470px;height: 700px;border: 1px solid black;">GAME OVER</div>';
+    const stageParentElement = this.stageElement.parentNode;
+    stageParentElement.replaceWith(stringToHtml(htmlString));
   };
+  /**
+   * メインループ
+   */
   main = () => {
     this.ctx.clearRect(0, 0, this.screenWidth, this.screenHeight);
     this.mainImage.draw();

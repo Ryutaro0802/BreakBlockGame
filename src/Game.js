@@ -60,37 +60,35 @@ export class Game {
    * ブロック生成
    */
   createBlocks = () => {
-    let count = 0;
+    const blockSize = 5;
+    const blockRowLength = this.screenWidth / blockSize;
     let y = 300;
     let x = 0;
-    while (count < this.BLOCK_LENGTH) {
-      if (count % 94 === 0) {
-        y += 5;
+    for (let i = 0; i < this.BLOCK_LENGTH; i++) {
+      if (i % blockRowLength === 0) {
+        y += blockSize;
         x = 0;
       }
       this.blocks = [
         ...this.blocks,
         new Block({
           ctx: this.ctx,
-          x: x * 5,
+          x: x * blockSize,
           y: y
         })
       ];
       x++;
-      count++;
     }
   };
   /**
    * ブロックにランダムでアイテムを仕込む
    */
   setHasItem = () => {
-    let count = 0;
-    while (count < this.ITEM_LENGTH) {
+    for (let i = 0; i < this.ITEM_LENGTH; i++) {
       const hasItemBlock = this.blocks[
         Math.floor(Math.random() * this.BLOCK_LENGTH)
       ];
       hasItemBlock.hasItem = true;
-      count++;
     }
   };
   /**
